@@ -1,16 +1,15 @@
 
 #include <stdlib.h>
-#include <stdio.h>
 
 void InsertionSort(int arr[], int dim){           // algoritmo di ordinamento con complessita' O(n^2)
 
     int i, j, tmp;
 
-    for(i = 1; i < dim; i++){                     // Prendo un elemento dell'array e lo reinserisco a sinistra nllea porzione ordinata
+    for(i = 1; i < dim; i++){                     // Prendo un elemento dell'array e lo reinserisco a sinistra nella porzione ordinata
                                                   
         tmp = arr[i];                             // e mi fermo alla posizione corretta(versione che ordina in verso crescente)
         j = i - 1;
-        while (j >= 0 && arr[j] > tmp)
+        while (j >= 0 && arr[j] > tmp)            // buona alternativa da utilizzare in dataset ristretti
         {
             arr[j + 1] = arr[j];
             j--;
@@ -51,7 +50,7 @@ void merge(int arr[], int p, int q, int r){      // strategia Divide-Et-Impera, 
         }
         k++;
     }
-    while (i < len1) {
+    while (i < len1) {                           // reinseriamo eventuali valori in eccesso
         arr[k] = L[i];
         i++;
         k++;
@@ -66,19 +65,19 @@ void merge(int arr[], int p, int q, int r){      // strategia Divide-Et-Impera, 
     free(R);
 }
 
-void MergeSort(int arr[], int p, int r){
+void MergeSort(int arr[], int p, int r){       // complessita' temporale ø(nlog(n   ))
 
     int q, tmp;
 
     if (p < (r - 1))
     {   
-        q = (r + p) / 2;
-        MergeSort(arr, p, q);
+        q = (r + p) / 2;                        // dividiamo l'array in maniera ricorsiva partendo da sinistra
+        MergeSort(arr, p, q);                   // finche' non avremo sotto-array da massimo due elementi
         MergeSort(arr, q + 1, r);
         merge(arr, p, q, r);
     }else{
 
-        if (arr[p] > arr[r])
+        if (arr[p] > arr[r])                    // Se l'array contiene meno di tre elementi lo ordiniamo on-place
         {
             tmp = arr[r];
             arr[r] = arr[p];
