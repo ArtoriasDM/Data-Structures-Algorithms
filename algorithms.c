@@ -30,23 +30,36 @@ void merge(int arr[], int p, int q, int r){      // strategia Divide-Et-Impera, 
     L = malloc(len1 * sizeof(int));              // abbiamo una complessita' spaziale ø(n) dovuta ai due buffer
     R = malloc(len2 * sizeof(int));
 
-    for(i = 0; i < len1; i++)
+    for(i = 0; i < len1; i++){
         L[i] = arr[p + i];
-    for (j = 0; j < len2; j++)
+    }
+    for (j = 0; j < len2; j++){
         R[j] = arr[q + j + 1];
-    
+    }
+
     i = 0;
     j = 0;
-
-    for ( k = p; k <= r; k++)                    // e una complessita' temporale ø(n) per copia e ordinamento
-    {
-        if(L[i] <= R[j]){
+    k = p;
+                
+    while (i < len1 && j < len2) {               // e una complessita' temporale ø(n) per copia e ordinamento
+        if (L[i] <= R[j]) {
             arr[k] = L[i];
             i++;
-        }else{
+        } else {
             arr[k] = R[j];
             j++;
         }
+        k++;
+    }
+    while (i < len1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+    while (j < len2) {
+        arr[k] = R[j];
+        j++;
+        k++;
     }
 
     free(L);
@@ -73,28 +86,5 @@ void MergeSort(int arr[], int p, int r){
         }
         
     }
-    
-}
-
-int main(){
-
-    int vec[] = {1, 0, 5, 6, 8, 7};
-    int i;
-
-    for (i = 0; i < 6; i++)
-    {
-        printf("%d ", vec[i]);
-    }
-    printf("\n");
-
-    MergeSort(vec, 0, 5);
-
-    for (i = 0; i < 6; i++)
-    {
-        printf("%d ", vec[i]);
-    }
-    printf("\n");
-
-    return 0;
     
 }
