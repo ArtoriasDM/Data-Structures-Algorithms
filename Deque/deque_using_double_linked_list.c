@@ -119,3 +119,22 @@ deque_t * popback(deque_t * d)
 
     return d;
 }
+
+deque_t * delete(deque_t * d, node_t * el)
+{
+    if(el == NULL){
+        printf("element to delete is NULL\n");
+    }else{
+        if(el->prev != NULL)
+            el->prev->next = el->next;
+        else
+            d->head = el->next;
+        if(el->next != NULL)
+            el->next->prev = el->prev;
+        else
+            d->tail = el->prev;
+    }
+    free(el);
+
+    return d;
+}
