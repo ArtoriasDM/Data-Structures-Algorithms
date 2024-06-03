@@ -154,7 +154,7 @@ void delete(HashTable * hash_table, char * key)
 
     load_fac = hash_table->count * 100 / hash_table->size;
 
-    if(load_fac < 10){
+    if(load_fac < 10 && hash_table->size > HT_INITIAL_SIZE){
         resize(hash_table, hash_table->size / 2);                  // logic and complexity need some adjustement
     }
 
