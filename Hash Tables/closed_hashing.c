@@ -85,14 +85,26 @@ int linear_probing(HashTable * ht, char * key)
 }
 */
 
+int hash(char * key, int step, int table_size)               // hash algorithm with linear probing or quadratic probing
+{
+    int index;
+
+    // hashing
+
+    // index = (index + step) % table_size;                    linear probing
+
+    return index;
+}
+
 void Insert(HashTable * ht, int data, char * key)
 {
     bucket_t * new, * slot;
-    int index, try;
+    int index, try, step;
 
     do 
-    {
-        index = hash(key);                                      // da rivedere per aggiungere logica sulle tombstone
+    {   
+        step = 0;
+        index = hash(key, step, ht->size);                                      
         slot = ht->table[index];
 
         if (slot != EMPTY)
@@ -100,9 +112,10 @@ void Insert(HashTable * ht, int data, char * key)
             try = index;
             do
             {
-                try = (try + 1) % ht->size;
+                step++;
+                try = hash(key, step, ht->size);
                 slot = ht->table[try];
-            } while (try != index && slot != EMPTY);
+            } while (try != index && slot != EMPTY && strcmp(slot->key, DELETED) != 0);
         
             if(try == index){
                 index = -1;
@@ -113,25 +126,34 @@ void Insert(HashTable * ht, int data, char * key)
         }
     } while(index == -1);
 
-    new = CreateNode(key, data);
-    ht->table[index] = new;
+    if(ht->table[index] == EMPTY){
+        new = CreateNode(key, data);
+        ht->table[index] = new;
+    }else{
+        ht->table[index]->data = data;
+        ht->table[index]->key = strdup(key);
+    }
+
     ht->count++;
 }
 
 void Delete(HashTable * ht, char * key)
 {
     bucket_t * slot;
-    int index, try;
+    int index, try, step;
 
-    index = hash(key);
+    step = 0;
+    index = hash(key, step, ht->size);
     slot = ht->table[index];
 
-    if(strcmp(slot->key, key) != 0){   
-        try = (index + 1) % ht->size;
+    if(slot == EMPTY || strcmp(slot->key, key) != 0){   
+        step++;
+        try = hash(key, step, ht->size);
         slot = ht->table[try];
         while(try != index && slot != EMPTY && strcmp(slot->key, key) != 0)
         {
-            try = (try + 1) % ht->size;
+            step++;
+            try = hash(key, step, ht->size);
             slot = ht->table[try];
         }
 
@@ -146,4 +168,35 @@ void Delete(HashTable * ht, char * key)
         slot->key = strdup(DELETED);
         ht->count--;
     }
+}
+
+int Search(HashTable * ht, char * key)
+{
+    bucket_t * slot;
+    int index, try, step;
+
+    step = 0;
+    index = hash(key, step, ht->size);
+    slot = ht->table[index];
+
+    if(slot == EMPTY || strcmp(slot->key, key) != 0){
+        do
+        {
+            step++;
+            try = hash(key, step, ht->size);
+            slot = ht->table[try];
+        } while (try != index && slot != EMPTY && strcmp(slot->key, key) != 0);
+        
+        if(index == try){
+            index = -1;
+        }else{
+            index = try;
+        }
+    }
+
+    if(index == -1){
+        printf("Item not found\n");
+    }
+    
+    return ht->table[index];
 }
