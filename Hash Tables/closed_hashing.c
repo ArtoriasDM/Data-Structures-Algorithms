@@ -109,7 +109,6 @@ void Insert(HashTable * ht, int data, char * key)
 
         if (slot != EMPTY)
         {
-            try = index;
             do
             {
                 step++;
@@ -185,7 +184,7 @@ int Search(HashTable * ht, char * key)
             step++;
             try = hash(key, step, ht->size);
             slot = ht->table[try];
-        } while (try != index && slot != EMPTY && strcmp(slot->key, key) != 0);
+        } while (try != index && (slot == EMPTY || strcmp(slot->key, key) != 0));
         
         if(index == try){
             index = -1;
@@ -198,5 +197,5 @@ int Search(HashTable * ht, char * key)
         printf("Item not found\n");
     }
     
-    return ht->table[index];
+    return ht->table[index]->data;
 }
