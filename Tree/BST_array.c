@@ -55,13 +55,13 @@ int Height(BinarySearchTree * bst, int index)
     right = Height(bst, index * BASE + 2);
 
     if(left > right)
-        return left;
-    return right;
+        return left + 1;
+    return right + 1;
 }
 
 void InOrder(BinarySearchTree * bst, int index)
 {
-    if(index < bst->size || bst->array[index] != -1)
+    if(index < bst->size && bst->array[index] != -1)
     {
         InOrder(bst->array, (BASE * index + 1));
         printf("%d", bst->array[index]);
@@ -71,7 +71,7 @@ void InOrder(BinarySearchTree * bst, int index)
 
 void PreOrder(BinarySearchTree * bst, int index)
 {
-    if(index < bst->size || bst->array[index] != -1)
+    if(index < bst->size && bst->array[index] != -1)
     {
         printf("%d", bst->array[index]);
         PreOrder(bst->array, (BASE * index + 1));
@@ -81,7 +81,7 @@ void PreOrder(BinarySearchTree * bst, int index)
 
 void PostOrder(BinarySearchTree * bst, int index)
 {
-    if(index < bst->size || bst->array[index] != -1)
+    if(index < bst->size && bst->array[index] != -1)
     {
         PostOrder(bst->array, (BASE * index + 1));
         PostOrder(bst->array, (BASE * index + 2));
@@ -140,7 +140,7 @@ int Successor(BinarySearchTree * bst, int index)
     }
 
     parent_index = (index - 1) / 2;
-    while(parent_index >= 0 && (parent_index * BASE + 2) == index)
+    while(parent_index >= 0 && (parent_index * BASE + 2 == index))
     {
         index = parent_index;
         parent_index = (parent_index - 1) / 2;
@@ -179,7 +179,7 @@ void Insert(BinarySearchTree * bst, int key)
 {
     int index = 0;
 
-    while(index < bst->size && index != -1)
+    while(index < bst->size && bst->array[index] != -1)
     {
         if(key < bst->array[index])
             index = BASE * index + 1;
@@ -198,7 +198,7 @@ void Insert(BinarySearchTree * bst, int key)
 
 void delete(BinarySearchTree * bst, int key)
 {
-    int del_index, new_height;
+    int del_index;
 
     if((BASE * key + 1 < bst->size && bst->array[BASE * key + 1] != -1) && (BASE * key + 2 < bst->size && bst->array[BASE * key + 2] != -1))
     {
@@ -225,8 +225,7 @@ void delete(BinarySearchTree * bst, int key)
 
     if(Height(bst, 0) < bst->height)
     {
-        new_height = bst->height - Height(bst, 0);
-        Resize(bst, new_height);
+        Resize(bst, Height(bst, 0));
     }
 
     bst->count--;
